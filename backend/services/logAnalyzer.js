@@ -7,8 +7,8 @@ class LogAnalyzer {
   constructor() {
     this.tokenizer = new natural.WordTokenizer();
     this.stemmer = natural.PorterStemmer;
-    this.sentiment = new natural.SentimentAnalyzer('English', 
-      natural.PorterStemmer, ['negation']);
+    // Remove problematic SentimentAnalyzer for now
+    this.sentiment = null;
     
     // Common log level patterns
     this.logLevelPatterns = {
@@ -478,10 +478,18 @@ class LogAnalyzer {
     
     if (textEntries.length === 0) return null;
 
+    // Simple sentiment analysis based on keywords since SentimentAnalyzer is disabled
+    const positiveWords = ['success', 'completed', 'ok', 'good', 'connected', 'healthy'];
+    const negativeWords = ['error', 'failed', 'timeout', 'crash', 'denied', 'invalid'];
+    
     const sentiments = textEntries.map(entry => {
-      const tokens = this.tokenizer.tokenize(entry.message.toLowerCase());
-      const stemmedTokens = tokens.map(token => this.stemmer.stem(token));
-      return natural.SentimentAnalyzer.getSentiment(stemmedTokens);
+      const message = entry.message.toLowerCase();
+      const positiveCount = positiveWords.filter(word => message.includes(word)).length;
+      const negativeCount = negativeWords.filter(word => message.includes(word)).length;
+      
+      if (positiveCount > negativeCount) return 0.5;
+      if (negativeCount > positiveCount) return -0.5;
+      return 0;
     });
 
     const avgSentiment = _.mean(sentiments);
