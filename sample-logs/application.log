@@ -1,0 +1,43 @@
+2024-08-30 09:15:23 [INFO] Application started successfully on port 8080
+2024-08-30 09:15:24 [INFO] Database connection established
+2024-08-30 09:16:45 [INFO] User login: john.doe@example.com
+2024-08-30 09:17:12 [INFO] Processing user request - Response time: 45ms
+2024-08-30 09:18:33 [WARN] High memory usage detected: 85%
+2024-08-30 09:19:15 [ERROR] Database connection timeout after 5000ms
+2024-08-30 09:19:16 [ERROR] Failed to process user request - Connection refused
+2024-08-30 09:19:17 [ERROR] Retry attempt 1 failed - Database connection timeout after 5000ms
+2024-08-30 09:19:18 [ERROR] Retry attempt 2 failed - Database connection timeout after 5000ms
+2024-08-30 09:20:45 [INFO] Database connection restored
+2024-08-30 09:21:12 [INFO] Processing user request - Response time: 52ms
+2024-08-30 09:22:33 [INFO] User logout: john.doe@example.com
+2024-08-30 09:25:45 [INFO] Processing user request - Response time: 1250ms
+2024-08-30 09:26:12 [WARN] Slow response detected: 1250ms
+2024-08-30 09:27:33 [ERROR] Out of memory exception in module UserService
+2024-08-30 09:28:15 [ERROR] Stack trace: UserService.processRequest() line 145
+2024-08-30 09:29:45 [INFO] Garbage collection completed
+2024-08-30 09:30:12 [INFO] Memory usage normalized: 45%
+2024-08-30 09:31:33 [INFO] User login: jane.smith@example.com
+2024-08-30 09:32:15 [INFO] Processing user request - Response time: 38ms
+2024-08-30 09:35:45 [ERROR] Authentication failed for user: hacker@malicious.com
+2024-08-30 09:36:12 [ERROR] Authentication failed for user: hacker@malicious.com
+2024-08-30 09:36:33 [ERROR] Authentication failed for user: hacker@malicious.com
+2024-08-30 09:37:15 [WARN] Multiple authentication failures detected from IP: 192.168.1.100
+2024-08-30 09:38:45 [INFO] IP 192.168.1.100 blocked for 30 minutes
+2024-08-30 09:40:12 [INFO] Processing user request - Response time: 42ms
+2024-08-30 09:42:33 [INFO] Cache hit ratio: 89%
+2024-08-30 09:45:15 [INFO] Background job completed: data-cleanup
+2024-08-30 09:47:45 [ERROR] Failed to send notification email - SMTP timeout
+2024-08-30 09:48:12 [ERROR] Failed to send notification email - SMTP timeout
+2024-08-30 09:50:33 [INFO] SMTP connection restored
+2024-08-30 09:52:15 [INFO] Processing user request - Response time: 67ms
+2024-08-30 09:55:45 [WARN] Disk space running low: 15% remaining
+2024-08-30 09:58:12 [INFO] Automated cleanup completed - 25% disk space available
+2024-08-30 10:00:33 [INFO] Hourly health check completed - All systems operational
+2024-08-30 10:02:15 [DEBUG] Cache statistics: 1247 hits, 156 misses
+2024-08-30 10:05:45 [INFO] Processing user request - Response time: 41ms
+2024-08-30 10:08:12 [ERROR] Database connection timeout after 5000ms
+2024-08-30 10:08:13 [ERROR] Failed to process user request - Connection refused
+2024-08-30 10:08:15 [INFO] Database connection restored
+2024-08-30 10:10:33 [INFO] User logout: jane.smith@example.com
+2024-08-30 10:12:15 [INFO] Session cleanup completed
+2024-08-30 10:15:45 [INFO] Application running smoothly - Uptime: 60 minutes

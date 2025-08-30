@@ -1,0 +1,45 @@
+node_modules
+npm-debug.log
+.git
+.gitignore
+README.md
+.env
+.nyc_output
+coverage
+.vscode
+.idea
+*.log
+.DS_Store
+Thumbs.db
+
+# Frontend build artifacts (will be built in Docker)
+frontend/build
+frontend/node_modules
+
+# Backend artifacts
+backend/node_modules
+backend/uploads/*
+backend/logs/*
+backend/database.sqlite
+
+# Development files
+*.md
+docker-compose*.yml
+.dockerignore
+Dockerfile*
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
