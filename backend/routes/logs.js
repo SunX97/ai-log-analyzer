@@ -9,6 +9,8 @@ const { logger } = require('../utils/logger');
 
 const router = express.Router();
 
+// Temporarily removed authentication for troubleshooting
+
 // Configure multer for file uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -44,12 +46,17 @@ const upload = multer({
  */
 router.post('/upload', upload.single('logFile'), async (req, res) => {
   try {
+    logger.info('Upload request received');
+    
     if (!req.file) {
+      logger.warn('No file in upload request');
       return res.status(400).json({
         success: false,
         error: 'No file uploaded'
       });
     }
+    
+    logger.info(`File uploaded: ${req.file.originalname}, size: ${req.file.size} bytes`);
 
     const db = getDatabase();
     const logAnalyzer = new LogAnalyzer();
