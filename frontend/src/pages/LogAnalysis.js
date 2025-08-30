@@ -219,7 +219,7 @@ const LogAnalysis = () => {
                 Patterns Found
               </Typography>
               <Typography variant="h5">
-                {analysis.patterns?.length || 0}
+                {Array.isArray(analysis.patterns) ? analysis.patterns.length : 0}
               </Typography>
             </CardContent>
           </Card>
@@ -231,7 +231,7 @@ const LogAnalysis = () => {
                 Anomalies
               </Typography>
               <Typography variant="h5" color="warning.main">
-                {analysis.anomalies?.length || 0}
+                {Array.isArray(analysis.anomalies) ? analysis.anomalies.length : 0}
               </Typography>
             </CardContent>
           </Card>
@@ -288,7 +288,7 @@ const LogAnalysis = () => {
               <Typography variant="h6" gutterBottom>
                 AI Insights
               </Typography>
-              {analysis.insights?.length > 0 ? (
+              {Array.isArray(analysis.insights) && analysis.insights.length > 0 ? (
                 <List>
                   {analysis.insights.map((insight, index) => (
                     <ListItem key={index} sx={{ px: 0 }}>
@@ -325,7 +325,7 @@ const LogAnalysis = () => {
           <Typography variant="h6" gutterBottom>
             Log Activity Timeline
           </Typography>
-          {analysis.timeline?.length > 0 ? (
+          {Array.isArray(analysis.timeline) && analysis.timeline.length > 0 ? (
             <ResponsiveContainer width="100%" height={400}>
               <LineChart data={analysis.timeline}>
                 <CartesianGrid strokeDasharray="3 3" />
@@ -355,7 +355,7 @@ const LogAnalysis = () => {
           <Typography variant="h6" gutterBottom>
             Detected Patterns
           </Typography>
-          {analysis.patterns?.length > 0 ? (
+          {Array.isArray(analysis.patterns) && analysis.patterns.length > 0 ? (
             analysis.patterns.map((pattern, index) => (
               <Accordion key={index}>
                 <AccordionSummary expandIcon={<ExpandMore />}>
@@ -397,7 +397,7 @@ const LogAnalysis = () => {
           <Typography variant="h6" gutterBottom>
             Anomalies Detected
           </Typography>
-          {analysis.anomalies?.length > 0 ? (
+          {Array.isArray(analysis.anomalies) && analysis.anomalies.length > 0 ? (
             analysis.anomalies.map((anomaly, index) => (
               <Alert 
                 key={index} 
@@ -432,7 +432,7 @@ const LogAnalysis = () => {
           <Typography variant="h6" gutterBottom>
             Sample Log Entries
           </Typography>
-          {entries?.length > 0 ? (
+          {Array.isArray(entries) && entries.length > 0 ? (
             <TableContainer component={Paper} sx={{ maxHeight: 500 }}>
               <Table stickyHeader size="small">
                 <TableHead>
@@ -481,7 +481,7 @@ const LogAnalysis = () => {
       </Card>
 
       {/* Top Errors */}
-      {analysis.topErrors?.length > 0 && (
+      {Array.isArray(analysis.topErrors) && analysis.topErrors.length > 0 && (
         <Card sx={{ mt: 3 }}>
           <CardContent>
             <Typography variant="h6" gutterBottom>

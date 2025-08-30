@@ -208,7 +208,7 @@ const LogUpload = () => {
                 Recent Uploads
               </Typography>
               
-              {logFiles?.data?.length > 0 ? (
+              {Array.isArray(logFiles?.data) && logFiles.data.length > 0 ? (
                 <List>
                   {logFiles.data.slice(0, 8).map((file) => (
                     <ListItem 

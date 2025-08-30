@@ -74,6 +74,11 @@ const Trends = () => {
 
   const trends = trendsData?.data || {};
   const { errorTrends = [], patternTrends = [], anomalyTrends = [] } = trends;
+  
+  // Ensure all trends data are arrays
+  const safeErrorTrends = Array.isArray(errorTrends) ? errorTrends : [];
+  const safePatternTrends = Array.isArray(patternTrends) ? patternTrends : [];
+  const safeAnomalyTrends = Array.isArray(anomalyTrends) ? anomalyTrends : [];
 
   return (
     <Box>
@@ -92,9 +97,9 @@ const Trends = () => {
               <Typography variant="h6" gutterBottom>
                 Error Rate Trends Over Time
               </Typography>
-              {errorTrends.length > 0 ? (
+              {safeErrorTrends.length > 0 ? (
                 <ResponsiveContainer width="100%" height={300}>
-                  <LineChart data={errorTrends}>
+                  <LineChart data={safeErrorTrends}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis 
                       dataKey="date" 
@@ -130,10 +135,10 @@ const Trends = () => {
               <Typography variant="h6" gutterBottom>
                 Most Common Patterns
               </Typography>
-              {patternTrends.length > 0 ? (
+              {safePatternTrends.length > 0 ? (
                 <Box>
                   <ResponsiveContainer width="100%" height={300}>
-                    <BarChart data={patternTrends.slice(0, 8)} layout="horizontal">
+                    <BarChart data={safePatternTrends.slice(0, 8)} layout="horizontal">
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis type="number" />
                       <YAxis 
@@ -158,7 +163,7 @@ const Trends = () => {
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {patternTrends.slice(0, 10).map((pattern, index) => (
+                        {safePatternTrends.slice(0, 10).map((pattern, index) => (
                           <TableRow key={index}>
                             <TableCell sx={{ maxWidth: 300, wordBreak: 'break-word' }}>
                               {pattern.pattern}
@@ -188,10 +193,10 @@ const Trends = () => {
               <Typography variant="h6" gutterBottom>
                 Common Anomaly Types
               </Typography>
-              {anomalyTrends.length > 0 ? (
+              {safeAnomalyTrends.length > 0 ? (
                 <Box>
                   <ResponsiveContainer width="100%" height={300}>
-                    <BarChart data={anomalyTrends}>
+                    <BarChart data={safeAnomalyTrends}>
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis 
                         dataKey="type" 
@@ -216,7 +221,7 @@ const Trends = () => {
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {anomalyTrends.map((anomaly, index) => (
+                        {safeAnomalyTrends.map((anomaly, index) => (
                           <TableRow key={index}>
                             <TableCell>
                               {anomaly.type.replace(/_/g, ' ').toUpperCase()}
@@ -251,51 +256,51 @@ const Trends = () => {
                 Trend Insights
               </Typography>
               
-              {patternTrends.length > 0 || anomalyTrends.length > 0 || errorTrends.length > 0 ? (
+              {safePatternTrends.length > 0 || safeAnomalyTrends.length > 0 || safeErrorTrends.length > 0 ? (
                 <Grid container spacing={3}>
                   {/* Pattern Insights */}
-                  {patternTrends.length > 0 && (
+                  {safePatternTrends.length > 0 && (
                     <Grid item xs={12} md={4}>
                       <Alert severity="info">
                         <Typography variant="subtitle2" gutterBottom>
                           Pattern Analysis
                         </Typography>
                         <Typography variant="body2">
-                          {patternTrends.length} distinct patterns identified across your logs. 
-                          The most common pattern appears {patternTrends[0]?.count || 0} times.
+                          {safePatternTrends.length} distinct patterns identified across your logs. 
+                          The most common pattern appears {safePatternTrends[0]?.count || 0} times.
                         </Typography>
                       </Alert>
                     </Grid>
                   )}
 
                   {/* Anomaly Insights */}
-                  {anomalyTrends.length > 0 && (
+                  {safeAnomalyTrends.length > 0 && (
                     <Grid item xs={12} md={4}>
                       <Alert severity="warning">
                         <Typography variant="subtitle2" gutterBottom>
                           Anomaly Summary
                         </Typography>
                         <Typography variant="body2">
-                          {anomalyTrends.length} types of anomalies detected. 
-                          Most frequent: {anomalyTrends[0]?.type.replace(/_/g, ' ')} 
-                          ({anomalyTrends[0]?.count} occurrences).
+                          {safeAnomalyTrends.length} types of anomalies detected. 
+                          Most frequent: {safeAnomalyTrends[0]?.type.replace(/_/g, ' ')} 
+                          ({safeAnomalyTrends[0]?.count} occurrences).
                         </Typography>
                       </Alert>
                     </Grid>
                   )}
 
                   {/* Error Rate Insights */}
-                  {errorTrends.length > 0 && (
+                  {safeErrorTrends.length > 0 && (
                     <Grid item xs={12} md={4}>
                       <Alert severity={
-                        parseFloat(errorTrends[0]?.errorRate) > 10 ? 'error' : 'success'
+                        parseFloat(safeErrorTrends[0]?.errorRate) > 10 ? 'error' : 'success'
                       }>
                         <Typography variant="subtitle2" gutterBottom>
                           Error Rate Status
                         </Typography>
                         <Typography variant="body2">
-                          Latest error rate: {errorTrends[0]?.errorRate}%. 
-                          {parseFloat(errorTrends[0]?.errorRate) > 10 
+                          Latest error rate: {safeErrorTrends[0]?.errorRate}%. 
+                          {parseFloat(safeErrorTrends[0]?.errorRate) > 10 
                             ? ' Consider investigating high error sources.'
                             : ' Error rates are within acceptable range.'
                           }

@@ -81,7 +81,7 @@ const Dashboard = () => {
 
   const overview = dashboardData?.data?.overview || {};
   const recentAnalyses = dashboardData?.data?.recentAnalyses || [];
-  const recentFiles = logFiles?.data?.slice(0, 5) || [];
+  const recentFiles = Array.isArray(logFiles?.data) ? logFiles.data.slice(0, 5) : [];
 
   return (
     <Box>
