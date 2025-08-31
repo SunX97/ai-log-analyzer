@@ -43,8 +43,20 @@ export const authService = {
   login: (username, password) => 
     api.post('/auth/login', { username, password }),
   
-  register: (username, email, password) => 
-    api.post('/auth/register', { username, email, password }),
+  register: (username, email, phoneNumber, password, confirmPassword) => 
+    api.post('/auth/register', { username, email, phoneNumber, password, confirmPassword }),
+  
+  sendOTP: (phoneNumber) => 
+    api.post('/auth/send-otp', { phoneNumber }),
+  
+  verifyOTP: (phoneNumber, otp) => 
+    api.post('/auth/verify-otp', { phoneNumber, otp }),
+  
+  forgotPassword: (phoneNumber) => 
+    api.post('/auth/forgot-password', { phoneNumber }),
+  
+  resetPassword: (phoneNumber, otp, newPassword, confirmPassword) => 
+    api.post('/auth/reset-password', { phoneNumber, otp, newPassword, confirmPassword }),
   
   getProfile: () => 
     api.get('/auth/profile'),

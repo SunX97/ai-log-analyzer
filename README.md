@@ -22,9 +22,14 @@ An intelligent log analysis system powered by AI that provides comprehensive ins
 - **Comparative Analysis**: Compare analysis results across multiple log files
 - **Export Capabilities**: Download analysis reports and insights
 
-### Security & Performance
-- **JWT Authentication**: Secure user authentication and session management
-- **File Upload Validation**: Secure file handling with type and size validation
+### Enhanced Authentication & Security
+- **Multi-Step Registration**: Username, email, phone number with OTP verification
+- **OTP-Based Authentication**: SMS OTP verification for Indian mobile numbers
+- **Forgot Password Recovery**: Mobile number-based password reset with OTP
+- **Phone Number Validation**: Automatic Indian mobile number formatting (+91XXXXXXXXXX)
+- **JWT Authentication**: Secure token-based authentication and session management
+- **Multiple SMS Providers**: Fast2SMS, Twilio, and AWS SNS integration
+- **File Upload Security**: Type and size validation with secure file handling
 - **Rate Limiting**: API protection against abuse
 - **Optimized Performance**: Efficient processing of large log files
 
@@ -126,9 +131,13 @@ ai-log-analyzer/
 ## 🔧 API Endpoints
 
 ### Authentication
-- `POST /api/auth/register` - User registration
-- `POST /api/auth/login` - User login
+- `POST /api/auth/register` - Enhanced user registration with phone number
+- `POST /api/auth/login` - User login with username/email
 - `GET /api/auth/profile` - Get user profile
+- `POST /api/auth/send-otp` - Send OTP to mobile number
+- `POST /api/auth/verify-otp` - Verify OTP code
+- `POST /api/auth/forgot-password` - Initiate password reset with mobile
+- `POST /api/auth/reset-password` - Complete password reset with OTP
 
 ### Log Management
 - `POST /api/logs/upload` - Upload and analyze log file
@@ -213,19 +222,150 @@ docker-compose --profile dev up -d
 
 #### Backend (.env)
 ```env
+# Server Configuration
 PORT=3001
 NODE_ENV=production
 FRONTEND_URL=http://localhost:3000
 DB_PATH=./database.sqlite
+
+# Authentication
 JWT_SECRET=your-super-secret-jwt-key
 JWT_EXPIRES_IN=7d
 LOG_LEVEL=info
+
+# SMS Services (Choose one for OTP functionality)
+# Option 1: Fast2SMS (Recommended for India - ₹0.15/SMS)
+FAST2SMS_API_KEY=your_fast2sms_api_key
+
+# Option 2: Twilio (Global - $0.0075/SMS)
+# TWILIO_ACCOUNT_SID=your_twilio_account_sid
+# TWILIO_AUTH_TOKEN=your_twilio_auth_token
+# TWILIO_PHONE_NUMBER=your_twilio_phone_number
+
+# Option 3: AWS SNS (AWS Infrastructure - $0.00645/SMS)
+# AWS_ACCESS_KEY_ID=your_aws_access_key
+# AWS_SECRET_ACCESS_KEY=your_aws_secret_key
+# AWS_REGION=us-east-1
 ```
 
 #### Frontend
 ```env
 REACT_APP_API_URL=http://localhost:3001/api
 ```
+
+## 📱 Enhanced Authentication System
+
+### Multi-Step Registration Process
+
+1. **Step 1: User Details**
+   - Username (minimum 3 characters)
+   - Email address (validated format)
+   - Indian mobile number (+91XXXXXXXXXX)
+   - Password (minimum 6 characters)
+   - Confirm password
+
+2. **Step 2: OTP Verification**
+   - 6-digit OTP sent to mobile number
+   - 5-minute expiry time
+   - Resend OTP functionality
+   - Back navigation support
+
+3. **Step 3: Account Creation**
+   - Automatic account creation after OTP verification
+   - JWT token generation
+   - Redirect to dashboard
+
+### Forgot Password Recovery
+
+1. **Step 1: Mobile Number Entry**
+   - Enter registered mobile number
+   - Indian number validation
+   - Account existence verification
+
+2. **Step 2: OTP Verification**
+   - 6-digit OTP sent to mobile
+   - OTP validation and expiry check
+   - Resend functionality
+
+3. **Step 3: Password Reset**
+   - New password entry
+   - Password confirmation
+   - Account update and success notification
+
+### SMS Integration Options
+
+#### Development Mode
+- **Default behavior**: OTPs displayed in server console
+- **Perfect for**: Testing and development
+- **Cost**: Free
+- **Setup**: No configuration needed
+
+#### Production SMS Services
+
+##### Fast2SMS (Recommended for India)
+- **Best for**: Indian mobile numbers
+- **Cost**: ₹0.15 per SMS (approximately)
+- **Setup**: Create account at [Fast2SMS.com](https://www.fast2sms.com/)
+- **Configuration**: Add `FAST2SMS_API_KEY` to .env
+- **Features**: 
+  - No setup fees
+  - Pay as you use
+  - Easy API integration
+  - Indian number optimization
+
+##### Twilio (Global)
+- **Best for**: International numbers, enterprise use
+- **Cost**: $0.0075 per SMS + $1/month phone rental
+- **Setup**: Create account at [Twilio.com](https://www.twilio.com/)
+- **Configuration**: Add Twilio credentials to .env
+- **Features**:
+  - Most reliable delivery
+  - Global coverage
+  - Advanced features
+  - Detailed analytics
+
+##### AWS SNS
+- **Best for**: AWS infrastructure users
+- **Cost**: $0.00645 per SMS
+- **Setup**: Configure in AWS Console
+- **Configuration**: Add AWS credentials to .env
+- **Features**:
+  - AWS integration
+  - Scalable infrastructure
+  - Pay per use
+  - Regional deployment
+
+### Quick SMS Setup Guide
+
+#### For Fast2SMS (Recommended)
+
+1. **Sign Up**: Visit [Fast2SMS.com](https://www.fast2sms.com/)
+2. **Verify**: Complete phone number verification
+3. **Get API Key**: Navigate to Developer API section
+4. **Add Credits**: Minimum ₹10 for testing
+5. **Configure**: Add to `backend/.env`:
+   ```env
+   FAST2SMS_API_KEY=your_actual_api_key_here
+   ```
+6. **Restart**: Restart your backend server
+7. **Test**: Try registration with real mobile number
+
+#### Automatic Mode Detection
+- System automatically detects configured SMS service
+- Falls back to development mode if no SMS service configured
+- Clear logging for troubleshooting
+- Error handling for failed SMS delivery
+
+### Phone Number Validation
+
+- **Supported formats**:
+  - `+91XXXXXXXXXX` (13 digits with country code)
+  - `91XXXXXXXXXX` (12 digits with country code)
+  - `XXXXXXXXXX` (10 digits, auto-prefixed with +91)
+
+- **Automatic formatting**: System automatically formats to `+91XXXXXXXXXX`
+- **Validation**: Only Indian mobile numbers (starts with 6-9)
+- **Sanitization**: Removes spaces, dashes, and special characters
 
 ## 🧪 Testing
 

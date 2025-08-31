@@ -8,7 +8,7 @@ let db;
 
 const initializeDatabase = () => {
   return new Promise((resolve, reject) => {
-    db = new sqlite3.Database(DB_PATH, (err) => {
+    db = new sqlite3.Database(DB_PATH, async (err) => {
       if (err) {
         logger.error('Error opening database:', err);
         reject(err);
@@ -23,7 +23,11 @@ const initializeDatabase = () => {
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           username TEXT UNIQUE NOT NULL,
           email TEXT UNIQUE NOT NULL,
+          phone_number TEXT UNIQUE,
           password_hash TEXT NOT NULL,
+          is_phone_verified BOOLEAN DEFAULT FALSE,
+          otp_code TEXT,
+          otp_expires DATETIME,
           created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         );
 
@@ -69,7 +73,7 @@ const initializeDatabase = () => {
         CREATE INDEX IF NOT EXISTS idx_analysis_results_type ON analysis_results(analysis_type);
       `;
 
-      db.exec(createTables, (err) => {
+      db.exec(createTables, async (err) => {
         if (err) {
           logger.error('Error creating tables:', err);
           reject(err);
@@ -77,7 +81,81 @@ const initializeDatabase = () => {
         }
         
         logger.info('Database tables created successfully');
+        
+        // Run migration to add missing columns to existing tables
+        try {
+          await runMigration();
+          logger.info('Database migration completed');
+          resolve();
+        } catch (migrationError) {
+          logger.error('Database migration failed:', migrationError);
+          reject(migrationError);
+        }
+      });
+    });
+  });
+};
+
+const runMigration = () => {
+  return new Promise((resolve, reject) => {
+    // Get all columns from users table
+    db.all("PRAGMA table_info(users)", (err, columns) => {
+      if (err) {
+        logger.error('Error getting column info:', err);
+        reject(err);
+        return;
+      }
+
+      const existingColumns = columns.map(col => col.name);
+      const requiredColumns = ['phone_number', 'is_phone_verified', 'otp_code', 'otp_expires'];
+      const missingColumns = requiredColumns.filter(col => !existingColumns.includes(col));
+
+      if (missingColumns.length === 0) {
+        logger.info('All required columns already exist. No migration needed.');
         resolve();
+        return;
+      }
+
+      logger.info(`Adding missing columns: ${missingColumns.join(', ')}`);
+
+      let completedCount = 0;
+      const totalCount = missingColumns.length;
+
+      const addColumn = (columnName, columnDef) => {
+        const sql = `ALTER TABLE users ADD COLUMN ${columnName} ${columnDef}`;
+        db.run(sql, (err) => {
+          if (err) {
+            logger.error(`Error adding column ${columnName}:`, err);
+            reject(err);
+            return;
+          }
+
+          logger.info(`Added column: ${columnName}`);
+          completedCount++;
+
+          if (completedCount === totalCount) {
+            logger.info('All columns added successfully');
+            resolve();
+          }
+        });
+      };
+
+      // Add each missing column (SQLite doesn't support UNIQUE constraint when adding columns)
+      missingColumns.forEach(column => {
+        switch (column) {
+          case 'phone_number':
+            addColumn('phone_number', 'TEXT');
+            break;
+          case 'is_phone_verified':
+            addColumn('is_phone_verified', 'BOOLEAN DEFAULT FALSE');
+            break;
+          case 'otp_code':
+            addColumn('otp_code', 'TEXT');
+            break;
+          case 'otp_expires':
+            addColumn('otp_expires', 'DATETIME');
+            break;
+        }
       });
     });
   });
